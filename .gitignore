@@ -49,3 +49,8 @@ Thumbs.db
 # Temporary directories
 temp-videos/
 original-images/ backup-images/
+
+# Large image files
+*.jpg
+*.jpeg
+

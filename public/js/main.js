@@ -523,14 +523,14 @@ const products = [
         id: 1,
         name: "Brave - Bosih Nogu Klompa (Pustinjski Bež)",
         price: 64.90,
-        image: "/images/Barebound Fev.2025-020-Editar-2.jpg",
+        image: "/images/Barebound Fev.2025-020-Editar-2.webp",
         gallery: [
-            "/images/Barebound Fev.2025-020-Editar-2.jpg",
-            "/images/Barebound Fev.2025-006.jpg",
-            "/images/Barebound Fev.2025-042.jpg",
-            "/images/Barebound Fev.2025-072.jpg",
-            "/images/Barebound Fev.2025 Menina-136_websize.jpg",
-            "/images/Barebound Fev.2025 Menina-148_websize.jpg"
+            "/images/Barebound Fev.2025-020-Editar-2.webp",
+            "/images/Barebound Fev.2025-006.webp",
+            "/images/Barebound Fev.2025-042.webp",
+            "/images/Barebound Fev.2025-072.webp",
+            "/images/Barebound Fev.2025 Menina-136_websize.webp",
+            "/images/Barebound Fev.2025 Menina-148_websize.webp"
         ],
         description: "Izrađene u Portugalu s visokokvalitetnim materijalima i praksama pravedne trgovine, ovaj novi model utjelovljuje našu predanost podršci za razvoj vašeg djeteta i stvaranju svjetlije budućnosti za najmlađe. Sastav: Cipele od meke kože sa širokom kapicom za prste, fleksibilnim potplatom i glatkim uloškom.",
         features: [
