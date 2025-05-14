@@ -1,0 +1,31 @@
+{
+    "name": "naca-ecommerce",
+    "version": "1.0.0",
+    "description": "E-commerce website with Stripe payment integration",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js",
+        "dev": "nodemon server.js",
+        "build": "npm run lint && npm run minify",
+        "lint": "eslint .",
+        "minify": "uglifyjs public/js/main.js -o public/js/main.min.js -c -m --source-map"
+    },
+    "keywords": [
+        "e-commerce",
+        "children",
+        "products"
+    ],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^4.18.2",
+        "stripe": "^14.5.0",
+        "cors": "^2.8.5",
+        "dotenv": "^16.3.1"
+    },
+    "devDependencies": {
+        "eslint": "^8.54.0",
+        "nodemon": "^3.0.1",
+        "uglify-js": "^3.17.4"
+    }
+}

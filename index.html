@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data:; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; script-src 'self'; media-src 'self'; frame-src 'self';"
+    />
+    <title>Ormarich</title>
+    <link rel="stylesheet" href="/css/main.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <div class="logo">Ormarich</div>
+      <nav id="mainNav">
+        <ul>
+          <li><a href="#home" class="active">Početna</a></li>
+          <li><a href="#products">Proizvodi</a></li>
+          <li><a href="#about">O nama</a></li>
+          <li><a href="#contact">Kontakt</a></li>
+        </ul>
+      </nav>
+      <div class="header-right">
+        <div class="cart-icon" id="cartIcon">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="cart-count">0</span>
+        </div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <!-- Hero Section -->
+      <section class="hero">
+        <div class="hero-overlay">
+          <h1>ZAKORAČITE U SVIJET BAREBOUND-a</h1>
+          <p>
+            Osnažujemo svaki korak, potičući slobodu, samopouzdanje i odvažnost
+            od samog početka. Ovo je više od obične obuće.
+          </p>
+        </div>
+      </section>
+
+      <!-- Products Section -->
+      <section id="products" class="container">
+        <h2 class="section-title">Naši Proizvodi</h2>
+        <div class="product-grid" id="productGrid">
+          <!-- Products will be dynamically added here -->
+        </div>
+      </section>
+
+      <!-- About Section -->
+      <section id="about" class="about-section">
+        <div class="container">
+          <h2 class="section-title">O nama</h2>
+          <div class="about-content-main">
+            <p>
+              Ideja o Ormarichu nastala je iz osobne potrage za posebnim,
+              kvalitetnim i estetski ugodnim proizvodima za naše dijete. Željeli
+              smo pronaći proizvode s dušom - tako je nastao concept shop koji
+              to nudi i drugim roditeljima.
+            </p>
+            <p>
+              Ormarich nije samo web shop – to je naša zbirka proizvoda koje
+              biramo za vlastito dijete. Sve što nudimo je organsko,
+              funkcionalno i estetski privlačno, napravljeno s poštovanjem prema
+              djeci i planeti.
+            </p>
+            <p>
+              Vjerujemo u kvalitetu umjesto kvantitete. Manje često znači više –
+              više prostora za igru, više trajnosti, više mira. Zato u Ormarichu
+              nalazite samo pažljivo odabrane brendove koji dijele ove
+              vrijednosti.
+            </p>
+            <p>
+              Ako tražite nešto drugačije, nježnije, prirodnije – na pravom ste
+              mjestu.
+            </p>
+            <p>Dobrodošli u Ormarich.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact Section -->
+      <section id="contact" class="contact-section">
+        <div class="container">
+          <h2 class="section-title">Kontaktirajte Nas</h2>
+          <div class="contact-grid">
+            <div class="contact-info">
+              <div class="info-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <div class="info-item-content">
+                  <h3>Posjetite Nas</h3>
+                  <p>Ilica 242<br />Zagreb, Hrvatska</p>
+                </div>
+              </div>
+              <div class="info-item">
+                <i class="fas fa-envelope"></i>
+                <div class="info-item-content">
+                  <h3>Pišite Nam</h3>
+                  <p>nasta@gmail.com</p>
+                </div>
+              </div>
+              <div class="info-item">
+                <i class="fas fa-phone"></i>
+                <div class="info-item-content">
+                  <h3>Nazovite Nas</h3>
+                  <p>+385 123 456 789<br />Pon-Pet, 9:00-17:00</p>
+                </div>
+              </div>
+            </div>
+            <form id="contactForm" class="contact-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="name">Ime</label>
+                  <input type="text" id="name" name="name" required />
+                </div>
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <input type="email" id="email" name="email" required />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="subject">Predmet</label>
+                <input type="text" id="subject" name="subject" required />
+              </div>
+              <div class="form-group">
+                <label for="message">Poruka</label>
+                <textarea id="message" name="message" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-paper-plane"></i> Pošalji Poruku
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3 class="footer-title">Ormarich</h3>
+          <p>
+            Donosimo nordijski dizajn i kvalitetu u dječje proizvode od 2018.
+          </p>
+        </div>
+        <div class="footer-section">
+          <h3 class="footer-title">Brzi Linkovi</h3>
+          <ul class="footer-links">
+            <li><a href="#home">Početna</a></li>
+            <li><a href="#products">Proizvodi</a></li>
+            <li><a href="#about">O nama</a></li>
+            <li><a href="#contact">Kontakt</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3 class="footer-title">Pravno</h3>
+          <ul class="footer-links">
+            <li><a href="/pravila-privatnosti.html">Pravila privatnosti</a></li>
+            <li><a href="/uvjeti-koristenja.html">Uvjeti korištenja</a></li>
+            <li><a href="/dostava-povrat.html">Dostava i povrat</a></li>
+            <li><a href="/cesta-pitanja.html">Česta pitanja</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3 class="footer-title">Follow Us</h3>
+          <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-pinterest"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="copyright">
+        <p>&copy; 2025 Ormarich. Sva prava pridržana.</p>
+      </div>
+    </footer>
+
+    <!-- Product Preview Modal -->
+    <div class="product-preview" id="productPreview">
+      <div class="preview-content">
+        <button class="preview-close" id="previewClose">
+          <i class="fas fa-times"></i>
+        </button>
+        <div class="preview-grid">
+          <div class="preview-image" id="previewImage">
+            <!-- Main image/video and thumbnails will be added dynamically here -->
+          </div>
+          <div class="preview-info">
+            <h2 id="previewTitle"></h2>
+            <p id="previewPrice" class="preview-price"></p>
+            <p id="previewDescription" class="preview-description"></p>
+            <div class="preview-features">
+              <h3>Karakteristike</h3>
+              <ul id="previewFeatures"></ul>
+            </div>
+            <div class="preview-quantity" id="previewQuantity">
+              <div class="quantity-controls">
+                <button class="quantity-btn decrease">-</button>
+                <input type="number" value="1" min="1" max="10" />
+                <button class="quantity-btn increase">+</button>
+              </div>
+            </div>
+            <button class="btn btn-add-cart" id="previewAddToCart">
+              <i class="fas fa-shopping-cart"></i> Dodaj u košaricu
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cart Overlay -->
+    <div class="cart-overlay" id="cartOverlay"></div>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+      <div class="cart-header">
+        <h2>Vaša košarica</h2>
+        <button class="close-cart" id="closeCart">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="cart-items" id="cartItems">
+        <!-- Cart items will be dynamically added here -->
+      </div>
+      <div class="cart-footer">
+        <div class="cart-total">
+          <span>Ukupno:</span>
+          <span id="cartTotal">€0.00</span>
+        </div>
+        <button class="btn btn-checkout" id="checkoutBtn" disabled>
+          <i class="fas fa-lock"></i> Nastavi na plaćanje
+        </button>
+      </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal-overlay" id="paymentModal">
+      <div class="payment-modal">
+        <div class="modal-header">
+          <h2 class="modal-title">Dovršite svoju kupnju</h2>
+          <button class="close-modal" id="closeModal">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form id="paymentForm">
+          <div id="payment-element"></div>
+          <button id="submit-payment" class="submit-payment">Plati sada</button>
+          <div id="payment-message" class="error-message"></div>
+        </form>
+        <div id="successMessage" class="success-message" style="display: none">
+          <i class="fas fa-check-circle"></i>
+          <h3>Plaćanje uspješno!</h3>
+          <p>Hvala na kupnji.</p>
+          <button class="btn" id="continueShoppingBtn">Nastavi kupovinu</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/main.js"></script>
+  </body>
+</html>
