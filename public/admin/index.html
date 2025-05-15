@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="hr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ormarich Admin | Prijava</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../css/main.css" />
+    <style>
+      .admin-login {
+        max-width: 400px;
+        margin: 100px auto;
+        padding: 30px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+      .login-heading {
+        text-align: center;
+        margin-bottom: 24px;
+      }
+      .form-group {
+        margin-bottom: 20px;
+      }
+      label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+      .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+      .btn-login {
+        width: 100%;
+        background-color: #4a6d8c;
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      .btn-login:hover {
+        background-color: #385571;
+      }
+      .error-message {
+        color: #e74c3c;
+        margin-top: 16px;
+        text-align: center;
+        display: none;
+      }
+      .login-loading {
+        display: none;
+        text-align: center;
+        margin-top: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="admin-login">
+        <div class="login-heading">
+          <h2>Ormarich Admin</h2>
+          <p>Prijavite se za upravljanje trgovinom</p>
+        </div>
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="username">Korisničko ime</label>
+            <input type="text" id="username" class="form-control" required />
+          </div>
+          <div class="form-group">
+            <label for="password">Lozinka</label>
+            <input
+              type="password"
+              id="password"
+              class="form-control"
+              required
+            />
+          </div>
+          <button type="submit" class="btn-login">Prijava</button>
+          <div class="error-message" id="errorMessage"></div>
+          <div class="login-loading" id="loginLoading">
+            <i class="fas fa-circle-notch fa-spin"></i> Provjera...
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      document
+        .getElementById('loginForm')
+        .addEventListener('submit', function (e) {
+          e.preventDefault();
+
+          const username = document.getElementById('username').value;
+          const password = document.getElementById('password').value;
+          const errorMessage = document.getElementById('errorMessage');
+          const loginLoading = document.getElementById('loginLoading');
+
+          // Simple client-side validation
+          if (!username || !password) {
+            errorMessage.textContent =
+              'Molimo unesite korisničko ime i lozinku';
+            errorMessage.style.display = 'block';
+            return;
+          }
+
+          // Show loading
+          loginLoading.style.display = 'block';
+          errorMessage.style.display = 'none';
+
+          // Send login request
+          fetch('/api/admin/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              loginLoading.style.display = 'none';
+
+              if (data.success) {
+                // Store token and redirect
+                localStorage.setItem('adminToken', data.token);
+                window.location.href = '/admin/dashboard.html';
+              } else {
+                // Show error
+                errorMessage.textContent =
+                  data.message || 'Neispravno korisničko ime ili lozinka';
+                errorMessage.style.display = 'block';
+              }
+            })
+            .catch((error) => {
+              loginLoading.style.display = 'none';
+              errorMessage.textContent =
+                'Došlo je do greške. Pokušajte ponovo.';
+              errorMessage.style.display = 'block';
+              console.error('Login error:', error);
+            });
+        });
+    </script>
+  </body>
+</html>

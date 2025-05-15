@@ -517,106 +517,48 @@ function debugLog(message, data = null) {
     }
 }
 
-// Sample products data
-const products = [
-    {
-        id: 1,
-        name: "Brave - Bosih Nogu Klompa (Pustinjski Bež)",
-        price: 64.90,
-        image: "/images/Barebound Fev.2025-020-Editar-2.webp",
-        gallery: [
-            "/images/Barebound Fev.2025-020-Editar-2.webp",
-            "/images/Barebound Fev.2025-006.webp",
-            "/images/Barebound Fev.2025-042.webp",
-            "/images/Barebound Fev.2025-072.webp",
-            "/images/Barebound Fev.2025 Menina-136_websize.webp",
-            "/images/Barebound Fev.2025 Menina-148_websize.webp"
-        ],
-        description: "Izrađene u Portugalu s visokokvalitetnim materijalima i praksama pravedne trgovine, ovaj novi model utjelovljuje našu predanost podršci za razvoj vašeg djeteta i stvaranju svjetlije budućnosti za najmlađe. Sastav: Cipele od meke kože sa širokom kapicom za prste, fleksibilnim potplatom i glatkim uloškom.",
-        features: [
-            "Izrađene od meke kože s širokom kapicom",
-            "Fleksibilan potplat za prirodan razvoj stopala",
-            "Glatki uložak za udobnost",
-            "Proizvedeno u Portugalu uz pravednu trgovinu"
-        ],
-        sizes: [
-            { name: "Veličina 0-3 mjeseca", id: "s1", stock: 5 },
-            { name: "Veličina 3-6 mjeseci", id: "s2", stock: 8 },
-            { name: "Veličina 6-9 mjeseci", id: "s3", stock: 3 },
-            { name: "Veličina 9-12 mjeseci", id: "s4", stock: 2 },
-            { name: "Veličina 12-18 mjeseci", id: "s5", stock: 4 }
-        ],
-        inStock: true,
-        hasStock: true
-    },
-    {
-        id: 2,
-        name: "Brave - Bosih Nogu Klompa (Šumsko Zelena)",
-        price: 64.90,
-        image: "/images/Barebound_Fev.2025-008.webp",
-        gallery: [
-            "/images/Barebound_Fev.2025-008.webp",
-            "/images/Barebound_Fev.2025-012.webp",
-            "/images/Barebound_Fev.2025-026-Editar.webp",
-            "/images/Barebound_Fev.2025-043.webp",
-            "/images/Barebound_Fev.2025_Menina-101.webp"
-        ],
-        description: "Izrađene u Portugalu s visokokvalitetnim materijalima i praksama pravedne trgovine, ovaj novi model utjelovljuje našu predanost podršci za razvoj vašeg djeteta i stvaranju svjetlije budućnosti za najmlađe. Sastav: Cipele od meke kože sa širokom kapicom za prste, fleksibilnim potplatom i glatkim uloškom.",
-        features: [
-            "Izrađene od meke kože s širokom kapicom",
-            "Fleksibilan potplat za prirodan razvoj stopala",
-            "Glatki uložak za udobnost",
-            "Proizvedeno u Portugalu uz pravednu trgovinu"
-        ],
-        sizes: [
-            { name: "Veličina 0-3 mjeseca", id: "s1", stock: 0 },
-            { name: "Veličina 3-6 mjeseci", id: "s2", stock: 0 },
-            { name: "Veličina 6-9 mjeseci", id: "s3", stock: 0 },
-            { name: "Veličina 9-12 mjeseci", id: "s4", stock: 0 },
-            { name: "Veličina 12-18 mjeseci", id: "s5", stock: 0 }
-        ],
-        inStock: false,
-        hasStock: false
-    },
-    {
-        id: 3,
-        name: "Brave - Bosih Nogu Klompa (Oceanska Plava)",
-        price: 64.90,
-        image: "/images/Barebound_Fev.2025-080.webp",
-        gallery: [
-            "/images/Barebound_Fev.2025-080.webp",
-            "/images/Barebound_Fev.2025-024-Editar.webp",
-            "/images/Barebound_Fev.2025-045.webp",
-            "/images/Barebound_Fev.2025_Menina-177_websize.webp",
-            "/images/Barebound_Fev.2025_Menina-200_websize.webp"
-        ],
-        description: "Izrađene u Portugalu s visokokvalitetnim materijalima i praksama pravedne trgovine, ovaj novi model utjelovljuje našu predanost podršci za razvoj vašeg djeteta i stvaranju svjetlije budućnosti za najmlađe. Sastav: Cipele od meke kože sa širokom kapicom za prste, fleksibilnim potplatom i glatkim uloškom.",
-        features: [
-            "Izrađene od meke kože s širokom kapicom",
-            "Fleksibilan potplat za prirodan razvoj stopala",
-            "Glatki uložak za udobnost",
-            "Proizvedeno u Portugalu uz pravednu trgovinu"
-        ],
-        sizes: [
-            { name: "Veličina 0-3 mjeseca", id: "s1", stock: 0 },
-            { name: "Veličina 3-6 mjeseci", id: "s2", stock: 0 },
-            { name: "Veličina 6-9 mjeseci", id: "s3", stock: 0 },
-            { name: "Veličina 9-12 mjeseci", id: "s4", stock: 0 },
-            { name: "Veličina 12-18 mjeseci", id: "s5", stock: 0 }
-        ],
-        inStock: false,
-        hasStock: false
+// Instead of hardcoded products array, use a let variable that will be populated from API
+let products = [];
+
+// Fetch products from the API
+async function fetchProducts() {
+    try {
+        const response = await fetch('/api/products');
+        if (!response.ok) {
+            throw new Error('Failed to fetch products');
+        }
+
+        const data = await response.json();
+        products = data; // Update the products array with data from API
+
+        return data;
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        throw error;
     }
-];
+}
 
 // Initialize the cart when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     try {
-        // Display products
-        const productGrid = document.getElementById('productGrid');
-        if (productGrid) {
-            displayProducts();
-        }
+        // Fetch products from API
+        fetchProducts()
+            .then(() => {
+                // After products are loaded, display them
+                if (productGrid) {
+                    displayProducts();
+                }
+            })
+            .catch(error => {
+                console.error('Error loading products:', error);
+                if (productGrid) {
+                    productGrid.innerHTML = `
+                        <div class="error-message">
+                            <p>Došlo je do greške pri učitavanju proizvoda. Molimo osvježite stranicu.</p>
+                        </div>
+                    `;
+                }
+            });
 
         // Initialize cart
         updateCartCount();

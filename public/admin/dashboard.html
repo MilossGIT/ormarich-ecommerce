@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="hr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ormarich Admin | Nadzorna ploča</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../css/admin.css" />
+    <link rel="icon" type="image/png" href="../images/favicon.png" />
+    <style>
+      /* Admin dashboard styles */
+      body {
+        background-color: #f7f9fc;
+      }
+      .admin-header {
+        background-color: #4a6d8c;
+        color: white;
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .admin-header h1 {
+        margin: 0;
+        font-size: 1.5rem;
+      }
+      .admin-navbar {
+        display: flex;
+        gap: 20px;
+      }
+      .admin-navbar a {
+        color: white;
+        text-decoration: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+      }
+      .admin-navbar a:hover,
+      .admin-navbar a.active {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+      .admin-container {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 0 20px;
+      }
+      .admin-card {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+      .admin-section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .admin-section-header h2 {
+        margin: 0;
+        font-size: 1.3rem;
+      }
+      .btn-admin {
+        background-color: #4a6d8c;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: background-color 0.3s;
+      }
+      .btn-admin:hover {
+        background-color: #385571;
+      }
+      .btn-danger {
+        background-color: #e74c3c;
+      }
+      .btn-danger:hover {
+        background-color: #c0392b;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+      }
+      th {
+        font-weight: 600;
+        color: #666;
+        background-color: #f8f9fa;
+      }
+      tr:hover {
+        background-color: #f9f9f9;
+      }
+      .product-actions {
+        display: flex;
+        gap: 8px;
+      }
+      .product-thumb {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 4px;
+      }
+      .product-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+      .product-modal-content {
+        background-color: white;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 800px;
+        max-height: 90vh;
+        overflow-y: auto;
+        padding: 20px;
+        position: relative;
+      }
+      .close-modal {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #666;
+      }
+      .close-modal:hover {
+        color: #333;
+      }
+      .form-row {
+        margin-bottom: 15px;
+      }
+      .form-row label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+      .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+      textarea.form-control {
+        min-height: 100px;
+      }
+      .gallery-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+      }
+      .gallery-item {
+        position: relative;
+        width: 100px;
+        height: 100px;
+      }
+      .gallery-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 4px;
+      }
+      .remove-image {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background-color: #e74c3c;
+        color: white;
+        border: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+      .add-image {
+        width: 100px;
+        height: 100px;
+        border: 2px dashed #ddd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: #aaa;
+        border-radius: 4px;
+      }
+      .add-image:hover {
+        border-color: #4a6d8c;
+        color: #4a6d8c;
+      }
+      .size-row {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+      .add-size {
+        margin-top: 5px;
+        background: none;
+        border: none;
+        color: #4a6d8c;
+        cursor: pointer;
+        padding: 0;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .features-container {
+        margin-top: 10px;
+      }
+      .feature-item {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+      .remove-feature {
+        background-color: #e74c3c;
+        color: white;
+        border: none;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+      .add-feature {
+        margin-top: 5px;
+        background: none;
+        border: none;
+        color: #4a6d8c;
+        cursor: pointer;
+        padding: 0;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100px;
+      }
+      .loading i {
+        font-size: 24px;
+        color: #4a6d8c;
+      }
+      .stock-circle {
+        width: 10px;
+        height: 10px;
+        display: inline-block;
+        border-radius: 50%;
+        margin-right: 5px;
+      }
+      .in-stock {
+        background-color: #2ecc71;
+      }
+      .out-of-stock {
+        background-color: #e74c3c;
+      }
+      .product-status {
+        display: flex;
+        align-items: center;
+      }
+      @media (max-width: 768px) {
+        .admin-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+        .admin-navbar {
+          flex-wrap: wrap;
+        }
+        table {
+          display: block;
+          overflow-x: auto;
+        }
+        .product-modal-content {
+          width: 95%;
+          padding: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="admin-header">
+      <h1><i class="fas fa-store"></i> Ormarich Admin</h1>
+      <nav class="admin-navbar">
+        <a href="#" class="active"><i class="fas fa-box-open"></i> Proizvodi</a>
+        <a href="#"><i class="fas fa-shopping-cart"></i> Narudžbe</a>
+        <a href="#"><i class="fas fa-cog"></i> Postavke</a>
+        <a href="#" id="logoutBtn"
+          ><i class="fas fa-sign-out-alt"></i> Odjava</a
+        >
+      </nav>
+    </header>
+
+    <div class="admin-container">
+      <div class="admin-card">
+        <div class="admin-section-header">
+          <h2><i class="fas fa-box-open"></i> Upravljanje proizvodima</h2>
+          <button class="btn-admin" id="addProductBtn">
+            <i class="fas fa-plus"></i> Dodaj novi proizvod
+          </button>
+        </div>
+        <div id="productsTableContainer">
+          <div class="loading">
+            <i class="fas fa-circle-notch fa-spin"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Form Modal -->
+    <div class="product-modal" id="productModal">
+      <div class="product-modal-content">
+        <button class="close-modal" id="closeModal">&times;</button>
+        <h2 id="modalTitle">
+          <i class="fas fa-plus-circle"></i> Dodaj novi proizvod
+        </h2>
+        <form id="productForm">
+          <input type="hidden" id="productId" />
+
+          <div class="form-row">
+            <label for="productName"
+              ><i class="fas fa-tag"></i> Naziv proizvoda</label
+            >
+            <input
+              type="text"
+              id="productName"
+              class="form-control"
+              required
+              placeholder="Npr. Brave - Bosih Nogu Klompa"
+            />
+          </div>
+
+          <div class="form-row">
+            <label for="productPrice"
+              ><i class="fas fa-euro-sign"></i> Cijena (€)</label
+            >
+            <input
+              type="number"
+              id="productPrice"
+              step="0.01"
+              min="0"
+              class="form-control"
+              required
+              placeholder="Npr. 64.90"
+            />
+          </div>
+
+          <div class="form-row">
+            <label for="productDescription"
+              ><i class="fas fa-align-left"></i> Opis proizvoda</label
+            >
+            <textarea
+              id="productDescription"
+              class="form-control"
+              required
+              placeholder="Unesite detaljan opis proizvoda..."
+            ></textarea>
+          </div>
+
+          <div class="form-row">
+            <label><i class="fas fa-image"></i> Glavna slika</label>
+            <input
+              type="text"
+              id="mainImage"
+              class="form-control"
+              placeholder="Unesite URL glavne slike (npr. /images/proizvod.webp)"
+              required
+            />
+            <small>Preporučena veličina: 1000x1000px, format: WebP</small>
+          </div>
+
+          <div class="form-row">
+            <label><i class="fas fa-images"></i> Galerija slika</label>
+            <div class="gallery-container" id="galleryContainer">
+              <!-- Gallery items will be added here -->
+              <div
+                class="add-image"
+                id="addGalleryImage"
+                data-tooltip="Dodaj novu sliku"
+              >
+                <i class="fas fa-plus"></i>
+              </div>
+            </div>
+            <small
+              >Dodajte više slika za galeriju proizvoda. Preporučeno: 5-8
+              slika.</small
+            >
+          </div>
+
+          <div class="form-row">
+            <label><i class="fas fa-list-ul"></i> Značajke proizvoda</label>
+            <div class="features-container" id="featuresContainer">
+              <!-- Feature items will be added here -->
+            </div>
+            <button type="button" class="add-feature" id="addFeature">
+              <i class="fas fa-plus"></i> Dodaj značajku
+            </button>
+            <small
+              >Dodajte ključne značajke proizvoda koje će biti prikazane kao
+              natuknice.</small
+            >
+          </div>
+
+          <div class="form-row">
+            <label><i class="fas fa-ruler"></i> Veličine i zaliha</label>
+            <div id="sizesContainer">
+              <!-- Size rows will be added here -->
+            </div>
+            <button type="button" class="add-size" id="addSize">
+              <i class="fas fa-plus"></i> Dodaj veličinu
+            </button>
+            <small
+              >Dodajte različite veličine proizvoda i njihovu dostupnu
+              količinu.</small
+            >
+          </div>
+
+          <div class="form-row">
+            <button type="submit" class="btn-admin" id="saveProductBtn">
+              <i class="fas fa-save"></i> Spremi proizvod
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      // Auth verification
+      function checkAuth() {
+        const token = localStorage.getItem('adminToken');
+        if (!token) {
+          window.location.href = '/admin/index.html';
+          return false;
+        }
+        return true;
+      }
+
+      // Logout functionality
+      document.getElementById('logoutBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+        if (confirm('Jeste li sigurni da se želite odjaviti?')) {
+          localStorage.removeItem('adminToken');
+          window.location.href = '/admin/index.html';
+        }
+      });
+
+      // Products management
+      let products = [];
+
+      // Load products
+      async function loadProducts() {
+        if (!checkAuth()) return;
+
+        const container = document.getElementById('productsTableContainer');
+        container.innerHTML =
+          '<div class="loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
+
+        try {
+          const response = await fetch('/api/admin/products', {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('adminToken')}`,
+            },
+          });
+
+          if (!response.ok) {
+            if (response.status === 401) {
+              localStorage.removeItem('adminToken');
+              window.location.href = '/admin/index.html';
+              return;
+            }
+            throw new Error('Failed to load products');
+          }
+
+          const data = await response.json();
+          products = data;
+          renderProductsTable();
+        } catch (error) {
+          console.error('Error loading products:', error);
+          container.innerHTML = `
+                    <div class="empty-state">
+                        <p>Došlo je do greške pri učitavanju proizvoda. Molimo pokušajte ponovno.</p>
+                        <button class="btn-admin" onclick="loadProducts()"><i class="fas fa-sync"></i> Pokušaj ponovno</button>
+                    </div>
+                `;
+        }
+      }
+
+      // Render products table
+      function renderProductsTable() {
+        const container = document.getElementById('productsTableContainer');
+
+        if (products.length === 0) {
+          container.innerHTML = `
+                    <div class="empty-state">
+                        <p>Još nema dodanih proizvoda.</p>
+                        <button class="btn-admin" onclick="document.getElementById('addProductBtn').click()">
+                            <i class="fas fa-plus"></i> Dodaj prvi proizvod
+                        </button>
+                    </div>
+                `;
+          return;
+        }
+
+        let tableHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th width="80">Slika</th>
+                            <th>Naziv</th>
+                            <th>Cijena</th>
+                            <th>Status</th>
+                            <th width="120">Akcije</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+        products.forEach((product) => {
+          const isInStock =
+            product.inStock ||
+            (product.sizes && product.sizes.some((size) => size.stock > 0));
+          const totalStock = product.sizes
+            ? product.sizes.reduce((sum, size) => sum + size.stock, 0)
+            : 0;
+
+          tableHTML += `
+                    <tr>
+                        <td><img src="${product.image}" alt="${
+            product.name
+          }" class="product-thumb" onclick="openEditProductModal(${
+            product.id
+          })"></td>
+                        <td>${product.name}</td>
+                        <td>${product.price.toFixed(2)} €</td>
+                        <td>
+                            <div class="product-status">
+                                <span class="stock-circle ${
+                                  isInStock ? 'in-stock' : 'out-of-stock'
+                                }"></span>
+                                ${
+                                  isInStock
+                                    ? `Dostupno (${totalStock})`
+                                    : 'Nije dostupno'
+                                }
+                            </div>
+                        </td>
+                        <td>
+                            <div class="product-actions">
+                                <button class="btn-admin edit-product" data-id="${
+                                  product.id
+                                }" data-tooltip="Uredi proizvod">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-admin btn-danger delete-product" data-id="${
+                                  product.id
+                                }" data-tooltip="Izbriši proizvod">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+        });
+
+        tableHTML += `
+                    </tbody>
+                </table>
+            `;
+
+        container.innerHTML = tableHTML;
+
+        // Add event listeners to action buttons
+        document.querySelectorAll('.edit-product').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const productId = parseInt(btn.dataset.id);
+            openEditProductModal(productId);
+          });
+        });
+
+        document.querySelectorAll('.delete-product').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const productId = parseInt(btn.dataset.id);
+            confirmDeleteProduct(productId);
+          });
+        });
+      }
+
+      // Open add product modal
+      document.getElementById('addProductBtn').addEventListener('click', () => {
+        openAddProductModal();
+      });
+
+      // Close modal
+      document.getElementById('closeModal').addEventListener('click', () => {
+        closeProductModal();
+      });
+
+      // Outside click to close modal
+      document.getElementById('productModal').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('productModal')) {
+          closeProductModal();
+        }
+      });
+
+      // Escape key to close modal
+      document.addEventListener('keydown', (e) => {
+        if (
+          e.key === 'Escape' &&
+          document.getElementById('productModal').style.display === 'flex'
+        ) {
+          closeProductModal();
+        }
+      });
+
+      // Product form submission
+      document
+        .getElementById('productForm')
+        .addEventListener('submit', async (e) => {
+          e.preventDefault();
+          if (!checkAuth()) return;
+
+          const saveBtn = document.getElementById('saveProductBtn');
+          const originalBtnText = saveBtn.innerHTML;
+          saveBtn.innerHTML =
+            '<i class="fas fa-circle-notch fa-spin"></i> Spremanje...';
+          saveBtn.disabled = true;
+
+          const productId = document.getElementById('productId').value;
+          const isEditMode = productId !== '';
+
+          // Collect form data
+          const formData = {
+            name: document.getElementById('productName').value,
+            price: parseFloat(document.getElementById('productPrice').value),
+            description: document.getElementById('productDescription').value,
+            image: document.getElementById('mainImage').value,
+            features: [],
+            sizes: [],
+            gallery: [],
+          };
+
+          // Collect gallery images
+          document
+            .querySelectorAll('.gallery-item:not(.add-image)')
+            .forEach((item) => {
+              const imgUrl = item.querySelector('img').src;
+              formData.gallery.push(imgUrl);
+            });
+
+          // If no gallery images, use main image
+          if (formData.gallery.length === 0) {
+            formData.gallery.push(formData.image);
+          }
+
+          // Collect features
+          document.querySelectorAll('.feature-input').forEach((input) => {
+            if (input.value.trim()) {
+              formData.features.push(input.value.trim());
+            }
+          });
+
+          // Collect sizes
+          document.querySelectorAll('.size-row').forEach((row) => {
+            const sizeName = row.querySelector('.size-name').value;
+            const sizeId =
+              row.querySelector('.size-id').value ||
+              `s${Math.floor(Math.random() * 1000)}`;
+            const stock = parseInt(row.querySelector('.size-stock').value) || 0;
+
+            if (sizeName.trim()) {
+              formData.sizes.push({
+                name: sizeName,
+                id: sizeId,
+                stock: stock,
+              });
+            }
+          });
+
+          // Calculate inStock and hasStock values
+          formData.hasStock = formData.sizes.some((size) => size.stock > 0);
+          formData.inStock = formData.hasStock;
+
+          // If in edit mode, include ID
+          if (isEditMode) {
+            formData.id = parseInt(productId);
+          }
+
+          try {
+            const url = isEditMode
+              ? `/api/admin/products/${productId}`
+              : '/api/admin/products';
+
+            const method = isEditMode ? 'PUT' : 'POST';
+
+            const response = await fetch(url, {
+              method: method,
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${localStorage.getItem('adminToken')}`,
+              },
+              body: JSON.stringify(formData),
+            });
+
+            if (!response.ok) {
+              if (response.status === 401) {
+                localStorage.removeItem('adminToken');
+                window.location.href = '/admin/index.html';
+                return;
+              }
+              throw new Error('Failed to save product');
+            }
+
+            // Reload products and close modal
+            await loadProducts();
+            closeProductModal();
+
+            // Show success message with toast
+            showToast(
+              isEditMode
+                ? `Proizvod "${formData.name}" uspješno ažuriran!`
+                : `Novi proizvod "${formData.name}" uspješno dodan!`,
+              'success'
+            );
+          } catch (error) {
+            console.error('Error saving product:', error);
+            showToast(
+              'Došlo je do greške pri spremanju proizvoda. Molimo pokušajte ponovno.',
+              'error'
+            );
+          } finally {
+            saveBtn.innerHTML = originalBtnText;
+            saveBtn.disabled = false;
+          }
+        });
+
+      // Open add product modal
+      function openAddProductModal() {
+        document.getElementById('modalTitle').innerHTML =
+          '<i class="fas fa-plus-circle"></i> Dodaj novi proizvod';
+        document.getElementById('productId').value = '';
+        document.getElementById('productForm').reset();
+
+        // Clear dynamic elements
+        document.getElementById('galleryContainer').innerHTML = `
+                <div class="add-image" id="addGalleryImage" data-tooltip="Dodaj novu sliku">
+                    <i class="fas fa-plus"></i>
+                </div>
+            `;
+        document.getElementById('featuresContainer').innerHTML = '';
+        document.getElementById('sizesContainer').innerHTML = '';
+
+        // Add default empty feature
+        addFeatureRow();
+
+        // Add default empty size
+        addSizeRow();
+
+        // Show modal
+        const modal = document.getElementById('productModal');
+        modal.style.display = 'flex';
+        setTimeout(() => {
+          modal.classList.add('fade-in');
+        }, 10);
+
+        // Add listeners for dynamic elements
+        setupDynamicElementListeners();
+      }
+
+      // Open edit product modal
+      function openEditProductModal(productId) {
+        const product = products.find((p) => p.id === productId);
+        if (!product) return;
+
+        document.getElementById(
+          'modalTitle'
+        ).innerHTML = `<i class="fas fa-edit"></i> Uredi proizvod: ${product.name}`;
+        document.getElementById('productId').value = product.id;
+
+        // Fill in form fields
+        document.getElementById('productName').value = product.name;
+        document.getElementById('productPrice').value = product.price;
+        document.getElementById('productDescription').value =
+          product.description;
+        document.getElementById('mainImage').value = product.image;
+
+        // Setup gallery
+        document.getElementById('galleryContainer').innerHTML = `
+                <div class="add-image" id="addGalleryImage" data-tooltip="Dodaj novu sliku">
+                    <i class="fas fa-plus"></i>
+                </div>
+            `;
+
+        if (product.gallery && product.gallery.length > 0) {
+          const galleryContainer = document.getElementById('galleryContainer');
+          const addBtn = document.getElementById('addGalleryImage');
+
+          product.gallery.forEach((imgUrl) => {
+            const galleryItem = createGalleryItem(imgUrl);
+            galleryContainer.insertBefore(galleryItem, addBtn);
+          });
+        }
+
+        // Setup features
+        document.getElementById('featuresContainer').innerHTML = '';
+
+        if (product.features && product.features.length > 0) {
+          product.features.forEach((feature) => {
+            addFeatureRow(feature);
+          });
+        } else {
+          addFeatureRow();
+        }
+
+        // Setup sizes
+        document.getElementById('sizesContainer').innerHTML = '';
+
+        if (product.sizes && product.sizes.length > 0) {
+          product.sizes.forEach((size) => {
+            addSizeRow(size.name, size.id, size.stock);
+          });
+        } else {
+          addSizeRow();
+        }
+
+        // Show modal
+        const modal = document.getElementById('productModal');
+        modal.style.display = 'flex';
+        setTimeout(() => {
+          modal.classList.add('fade-in');
+        }, 10);
+
+        // Add listeners for dynamic elements
+        setupDynamicElementListeners();
+
+        // Focus first field
+        setTimeout(() => {
+          document.getElementById('productName').focus();
+        }, 300);
+      }
+
+      // Close product modal
+      function closeProductModal() {
+        const modal = document.getElementById('productModal');
+        modal.classList.remove('fade-in');
+        setTimeout(() => {
+          modal.style.display = 'none';
+        }, 300);
+      }
+
+      // Add a new gallery item
+      function createGalleryItem(imgUrl = '') {
+        const item = document.createElement('div');
+        item.className = 'gallery-item';
+
+        item.innerHTML = `
+                <img src="${
+                  imgUrl || '/images/placeholder.jpg'
+                }" alt="Gallery image">
+                <button type="button" class="remove-image" data-tooltip="Ukloni sliku">×</button>
+            `;
+
+        // Add remove event listener
+        item.querySelector('.remove-image').addEventListener('click', () => {
+          item.classList.add('fade-out');
+          setTimeout(() => {
+            item.remove();
+          }, 300);
+        });
+
+        return item;
+      }
+
+      // Add a new feature row
+      function addFeatureRow(featureText = '') {
+        const featuresContainer = document.getElementById('featuresContainer');
+
+        const featureItem = document.createElement('div');
+        featureItem.className = 'feature-item';
+
+        featureItem.innerHTML = `
+                <input type="text" class="form-control feature-input" value="${featureText}" placeholder="Npr. Izrađene od meke kože">
+                <button type="button" class="remove-feature" data-tooltip="Ukloni značajku">×</button>
+            `;
+
+        // Add remove event listener
+        featureItem
+          .querySelector('.remove-feature')
+          .addEventListener('click', () => {
+            featureItem.classList.add('fade-out');
+            setTimeout(() => {
+              featureItem.remove();
+            }, 300);
+          });
+
+        featuresContainer.appendChild(featureItem);
+      }
+
+      // Add a new size row
+      function addSizeRow(sizeName = '', sizeId = '', stock = 0) {
+        const sizesContainer = document.getElementById('sizesContainer');
+
+        const sizeRow = document.createElement('div');
+        sizeRow.className = 'size-row';
+
+        sizeRow.innerHTML = `
+                <input type="text" class="form-control size-name" value="${sizeName}" placeholder="Npr. Veličina 0-3 mjeseca" style="flex: 2;">
+                <input type="hidden" class="size-id" value="${sizeId}">
+                <input type="number" class="form-control size-stock" value="${stock}" min="0" placeholder="Količina" style="flex: 1;">
+                <button type="button" class="remove-feature" data-tooltip="Ukloni veličinu">×</button>
+            `;
+
+        // Add remove event listener
+        sizeRow
+          .querySelector('.remove-feature')
+          .addEventListener('click', () => {
+            sizeRow.classList.add('fade-out');
+            setTimeout(() => {
+              sizeRow.remove();
+            }, 300);
+          });
+
+        sizesContainer.appendChild(sizeRow);
+      }
+
+      // Setup listeners for dynamic elements
+      function setupDynamicElementListeners() {
+        // Add gallery image
+        document
+          .getElementById('addGalleryImage')
+          .addEventListener('click', () => {
+            const imgUrl = prompt('Unesite URL slike:');
+            if (imgUrl && imgUrl.trim()) {
+              const galleryContainer =
+                document.getElementById('galleryContainer');
+              const addBtn = document.getElementById('addGalleryImage');
+              const galleryItem = createGalleryItem(imgUrl);
+              galleryContainer.insertBefore(galleryItem, addBtn);
+            }
+          });
+
+        // Add feature
+        document.getElementById('addFeature').addEventListener('click', () => {
+          addFeatureRow();
+        });
+
+        // Add size
+        document.getElementById('addSize').addEventListener('click', () => {
+          addSizeRow();
+        });
+      }
+
+      // Confirm product deletion
+      function confirmDeleteProduct(productId) {
+        const product = products.find((p) => p.id === productId);
+        if (!product) return;
+
+        if (
+          confirm(
+            `Jeste li sigurni da želite izbrisati proizvod "${product.name}"?`
+          )
+        ) {
+          deleteProduct(productId);
+        }
+      }
+
+      // Delete product
+      async function deleteProduct(productId) {
+        if (!checkAuth()) return;
+
+        try {
+          const product = products.find((p) => p.id === productId);
+          const productName = product ? product.name : 'Proizvod';
+
+          const response = await fetch(`/api/admin/products/${productId}`, {
+            method: 'DELETE',
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('adminToken')}`,
+            },
+          });
+
+          if (!response.ok) {
+            if (response.status === 401) {
+              localStorage.removeItem('adminToken');
+              window.location.href = '/admin/index.html';
+              return;
+            }
+            throw new Error('Failed to delete product');
+          }
+
+          // Reload products
+          await loadProducts();
+
+          // Show success message
+          showToast(`Proizvod "${productName}" uspješno izbrisan!`, 'success');
+        } catch (error) {
+          console.error('Error deleting product:', error);
+          showToast(
+            'Došlo je do greške pri brisanju proizvoda. Molimo pokušajte ponovno.',
+            'error'
+          );
+        }
+      }
+
+      // Show toast notification
+      function showToast(message, type = 'info') {
+        // Remove existing toasts
+        const existingToasts = document.querySelectorAll('.toast');
+        existingToasts.forEach((toast) => {
+          toast.remove();
+        });
+
+        // Create toast element
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+
+        let icon = 'info-circle';
+        if (type === 'success') icon = 'check-circle';
+        if (type === 'error') icon = 'exclamation-circle';
+
+        toast.innerHTML = `
+            <i class="fas fa-${icon}"></i>
+            <span>${message}</span>
+            <button class="toast-close">&times;</button>
+        `;
+
+        // Add to document
+        document.body.appendChild(toast);
+
+        // Show toast
+        setTimeout(() => {
+          toast.classList.add('show');
+        }, 10);
+
+        // Add close button functionality
+        toast.querySelector('.toast-close').addEventListener('click', () => {
+          toast.classList.remove('show');
+          setTimeout(() => {
+            toast.remove();
+          }, 300);
+        });
+
+        // Auto close after 5 seconds
+        setTimeout(() => {
+          toast.classList.remove('show');
+          setTimeout(() => {
+            toast.remove();
+          }, 300);
+        }, 5000);
+      }
+
+      // Add CSS for toasts
+      const style = document.createElement('style');
+      style.textContent = `
+          .toast {
+              position: fixed;
+              bottom: 20px;
+              right: 20px;
+              background-color: #333;
+              color: white;
+              padding: 12px 20px;
+              border-radius: 6px;
+              box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              transform: translateY(100px);
+              opacity: 0;
+              transition: all 0.3s ease;
+              z-index: 1000;
+              max-width: 90%;
+          }
+          
+          .toast.show {
+              transform: translateY(0);
+              opacity: 1;
+          }
+          
+          .toast-success {
+              background-color: #2ecc71;
+          }
+          
+          .toast-error {
+              background-color: #e74c3c;
+          }
+          
+          .toast-close {
+              background: none;
+              border: none;
+              color: white;
+              font-size: 18px;
+              cursor: pointer;
+              margin-left: 10px;
+              opacity: 0.8;
+              transition: opacity 0.3s;
+          }
+          
+          .toast-close:hover {
+              opacity: 1;
+          }
+          
+          @media (max-width: 768px) {
+              .toast {
+                  left: 20px;
+                  right: 20px;
+                  text-align: center;
+                  justify-content: center;
+              }
+          }
+          
+          .fade-out {
+              opacity: 0;
+              transform: scale(0.9);
+              transition: all 0.3s ease;
+          }
+      `;
+      document.head.appendChild(style);
+
+      // Initial page load
+      document.addEventListener('DOMContentLoaded', () => {
+        if (checkAuth()) {
+          loadProducts();
+        }
+      });
+    </script>
+  </body>
+</html>

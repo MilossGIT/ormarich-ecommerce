@@ -2,6 +2,9 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const dotenv = require('dotenv');
+const fs = require('fs');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 // Load environment variables
 dotenv.config();
@@ -9,6 +12,16 @@ dotenv.config();
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 if (!STRIPE_SECRET_KEY) {
     console.warn('Warning: STRIPE_SECRET_KEY is not set. Using test mode.');
+}
+
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';
+
+// Hash password if not already hashed
+let hashedPassword = process.env.ADMIN_PASSWORD_HASH;
+if (!hashedPassword && ADMIN_PASSWORD) {
+    hashedPassword = bcrypt.hashSync(ADMIN_PASSWORD, 10);
 }
 
 const stripe = require('stripe')(STRIPE_SECRET_KEY || 'sk_test_51ItIsJustADummyKeyForTestingPleaseReplaceMe');
@@ -41,10 +54,229 @@ app.use((req, res, next) => {
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Utility functions for product management
+const getProductsFilePath = () => path.join(__dirname, 'public', 'admin', 'products.json');
+
+const getProducts = () => {
+    try {
+        const filePath = getProductsFilePath();
+        if (!fs.existsSync(filePath)) {
+            return [];
+        }
+        const data = fs.readFileSync(filePath, 'utf8');
+        return JSON.parse(data);
+    } catch (error) {
+        console.error('Error reading products file:', error);
+        return [];
+    }
+};
+
+const saveProducts = (products) => {
+    try {
+        const filePath = getProductsFilePath();
+        const dirPath = path.dirname(filePath);
+
+        if (!fs.existsSync(dirPath)) {
+            fs.mkdirSync(dirPath, { recursive: true });
+        }
+
+        fs.writeFileSync(filePath, JSON.stringify(products, null, 2), 'utf8');
+        return true;
+    } catch (error) {
+        console.error('Error saving products file:', error);
+        return false;
+    }
+};
+
+// Middleware to verify admin JWT token
+const verifyAdminToken = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ success: false, message: 'Unauthorized: No token provided' });
+    }
+
+    const token = authHeader.split(' ')[1];
+
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        req.adminUser = decoded;
+        next();
+    } catch (error) {
+        return res.status(401).json({ success: false, message: 'Unauthorized: Invalid token' });
+    }
+};
+
 // Routes
 app.get('/api/get-stripe-key', (req, res) => {
     const publishableKey = process.env.STRIPE_PUBLISHABLE_KEY || 'pk_test_DummyPublishableKeyForTesting';
     res.json({ publishableKey });
+});
+
+// Admin login endpoint
+app.post('/api/admin/login', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+
+        if (!username || !password) {
+            return res.status(400).json({ success: false, message: 'Username and password are required' });
+        }
+
+        // Check username
+        if (username !== ADMIN_USERNAME) {
+            return res.status(401).json({ success: false, message: 'Invalid credentials' });
+        }
+
+        // Check password
+        const isPasswordValid = hashedPassword
+            ? await bcrypt.compare(password, hashedPassword)
+            : password === ADMIN_PASSWORD;
+
+        if (!isPasswordValid) {
+            return res.status(401).json({ success: false, message: 'Invalid credentials' });
+        }
+
+        // Generate JWT token
+        const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: '24h' });
+
+        res.json({
+            success: true,
+            token,
+            message: 'Login successful'
+        });
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
+
+// Admin product management endpoints
+app.get('/api/admin/products', verifyAdminToken, (req, res) => {
+    try {
+        const products = getProducts();
+        res.json(products);
+    } catch (error) {
+        console.error('Error getting products:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
+
+app.post('/api/admin/products', verifyAdminToken, (req, res) => {
+    try {
+        const products = getProducts();
+        const newProduct = req.body;
+
+        // Validate required fields
+        if (!newProduct.name || !newProduct.price || !newProduct.image) {
+            return res.status(400).json({ success: false, message: 'Missing required fields' });
+        }
+
+        // Generate a new ID
+        const maxId = products.length > 0 ? Math.max(...products.map(p => p.id)) : 0;
+        newProduct.id = maxId + 1;
+
+        // Add product
+        products.push(newProduct);
+
+        // Save to file
+        if (saveProducts(products)) {
+            res.status(201).json({ success: true, product: newProduct });
+        } else {
+            res.status(500).json({ success: false, message: 'Failed to save product' });
+        }
+    } catch (error) {
+        console.error('Error creating product:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
+
+app.get('/api/admin/products/:id', verifyAdminToken, (req, res) => {
+    try {
+        const products = getProducts();
+        const productId = parseInt(req.params.id);
+        const product = products.find(p => p.id === productId);
+
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Product not found' });
+        }
+
+        res.json(product);
+    } catch (error) {
+        console.error('Error getting product:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
+
+app.put('/api/admin/products/:id', verifyAdminToken, (req, res) => {
+    try {
+        const products = getProducts();
+        const productId = parseInt(req.params.id);
+        const updatedProduct = req.body;
+
+        // Validate required fields
+        if (!updatedProduct.name || !updatedProduct.price || !updatedProduct.image) {
+            return res.status(400).json({ success: false, message: 'Missing required fields' });
+        }
+
+        // Find product index
+        const index = products.findIndex(p => p.id === productId);
+
+        if (index === -1) {
+            return res.status(404).json({ success: false, message: 'Product not found' });
+        }
+
+        // Update product, preserving ID
+        updatedProduct.id = productId;
+        products[index] = updatedProduct;
+
+        // Save to file
+        if (saveProducts(products)) {
+            res.json({ success: true, product: updatedProduct });
+        } else {
+            res.status(500).json({ success: false, message: 'Failed to update product' });
+        }
+    } catch (error) {
+        console.error('Error updating product:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
+
+app.delete('/api/admin/products/:id', verifyAdminToken, (req, res) => {
+    try {
+        const products = getProducts();
+        const productId = parseInt(req.params.id);
+
+        // Find product index
+        const index = products.findIndex(p => p.id === productId);
+
+        if (index === -1) {
+            return res.status(404).json({ success: false, message: 'Product not found' });
+        }
+
+        // Remove product
+        products.splice(index, 1);
+
+        // Save to file
+        if (saveProducts(products)) {
+            res.json({ success: true, message: 'Product deleted successfully' });
+        } else {
+            res.status(500).json({ success: false, message: 'Failed to delete product' });
+        }
+    } catch (error) {
+        console.error('Error deleting product:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
+
+// Public API to get products for the frontend
+app.get('/api/products', (req, res) => {
+    try {
+        const products = getProducts();
+        res.json(products);
+    } catch (error) {
+        console.error('Error getting products:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
 });
 
 app.post('/api/create-payment-intent', async (req, res) => {

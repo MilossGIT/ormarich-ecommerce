@@ -54,3 +54,7 @@ original-images/ backup-images/
 *.jpg
 *.jpeg
 
+# Private documentation
+README.md
+admin-instructions.md
+
